@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "AI-Powered Adaptive Learning App",
   "main": "js/app.js",
-  "homepage": "https://yourusername.github.io/MaestraMind",
+  "homepage": "https://christopherjoshy.github.io/MaestraMind",
   "scripts": {
     "setup-env": "node scripts/set-env.js",
     "start": "npm run setup-env && webpack serve --mode development",
