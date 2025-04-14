@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaestraMind - AI-Powered Adaptive Learning</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- No Firebase SDK imports here as we're using ES modules -->
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav id="main-nav">
+            <div class="logo">
+                <h1>MaestraMind</h1>
+            </div>
+            <div class="nav-links">
+                <div id="user-profile" class="hidden">
+                    <img id="user-photo" src="" alt="Profile">
+                    <span id="user-name"></span>
+                </div>
+                <button id="login-button" class="btn btn-primary">Sign in with Google</button>
+                <button id="logout-button" class="btn btn-outline hidden">Sign Out</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main>
+            <!-- Landing Page (shown when not logged in) -->
+            <section id="landing-page">
+                <div class="hero">
+                    <h1>Transform Your Notes into Personalized Learning</h1>
+                    <p>Upload your study materials and let our AI create a customized learning experience just for you.</p>
+                    <button id="get-started-btn" class="btn btn-primary btn-large">Get Started</button>
+                </div>
+                <div class="features">
+                    <div class="feature-card">
+                        <i class="fas fa-file-upload"></i>
+                        <h3>Upload Multiple Notes</h3>
+                        <p>Text input or file uploads supported</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-brain"></i>
+                        <h3>AI-Powered Analysis</h3>
+                        <p>Gemini AI processes your content</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h3>Personalized Learning</h3>
+                        <p>Adaptive paths based on your progress</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Track Progress</h3>
+                        <p>Real-time insights into your learning</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard (shown when logged in) -->
+            <section id="dashboard" class="hidden">
+                <div class="dashboard-header">
+                    <h2>Your Learning Dashboard</h2>
+                    <button id="upload-notes-btn" class="btn btn-primary">Upload New Notes</button>
+                </div>
+                
+                <div class="courses-container">
+                    <h3>Your Courses</h3>
+                    <div id="courses-list" class="courses-grid">
+                        <!-- Courses will be dynamically added here -->
+                        <div class="empty-state hidden">
+                            <p>You don't have any courses yet. Upload your notes to get started!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upload Notes Section -->
+            <section id="upload-section" class="hidden">
+                <div class="upload-container">
+                    <h2>Upload Your Study Notes</h2>
+                    <p>Upload your notes and our AI will create a personalized learning experience for you.</p>
+                    
+                    <div class="upload-options">
+                        <div class="upload-tab active" data-tab="text">Text Input</div>
+                        <div class="upload-tab" data-tab="file">File Upload</div>
+                    </div>
+                    
+                    <div class="upload-content">
+                        <div id="text-upload" class="upload-panel active">
+                            <textarea id="notes-text" placeholder="Paste your notes here..."></textarea>
+                            <button id="submit-text" class="btn btn-primary">Process Notes</button>
+                        </div>
+                        
+                        <div id="file-upload" class="upload-panel">
+                            <div class="file-drop-area">
+                                <span class="file-message">Drag & drop files or click to browse</span>
+                                <input type="file" id="file-input" accept=".pdf,.txt,.md,.docx" multiple>
+                            </div>
+                            <div id="file-list"></div>
+                            <button id="submit-files" class="btn btn-primary">Upload & Process</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Course View Section -->
+            <section id="course-view" class="hidden">
+                <div class="course-header">
+                    <button class="back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+                    <h2 id="course-title">Course Title</h2>
+                </div>
+                
+                <div class="course-content">
+                    <div class="course-sidebar">
+                        <div class="course-summary">
+                            <h3>Summary</h3>
+                            <p id="course-summary-text"></p>
+                        </div>
+                        <div class="course-lessons">
+                            <h3>Lessons</h3>
+                            <ul id="lessons-list">
+                                <!-- Lessons will be dynamically added here -->
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="lesson-content">
+                        <div id="lesson-container">
+                            <h3 id="lesson-title">Lesson Title</h3>
+                            <div id="lesson-text"></div>
+                            
+                            <div id="quiz-container" class="hidden">
+                                <h4>Quiz</h4>
+                                <div id="quiz-questions">
+                                    <!-- Quiz questions will be dynamically added here -->
+                                </div>
+                                <button id="submit-quiz" class="btn btn-primary">Submit Answers</button>
+                            </div>
+                            
+                            <div id="flashcards-container" class="hidden">
+                                <h4>Flashcards</h4>
+                                <div class="flashcards-deck">
+                                    <!-- Flashcards will be dynamically added here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading Overlay -->
+            <div id="loading-overlay" class="hidden">
+                <div class="loader"></div>
+                <p id="loading-message">Processing your notes with AI...</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2023 MaestraMind. All rights reserved.</p>
+            <p>Powered by Gemini AI and Firebase</p>
+        </footer>
+    </div>
+
+    <!-- Application Scripts -->
+    <script src="dist/bundle.js"></script>
+</body>
+</html>
