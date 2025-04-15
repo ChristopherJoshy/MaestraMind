@@ -16,11 +16,11 @@ MaestraMind is a solo-developer-friendly adaptive learning web application that 
 ## Tech Stack
 
 - **Frontend**: HTML/CSS/JavaScript
-- **Backend**: Gemini API (handled in Firebase Functions or client SDK)
+- **Backend**: Gemini API (handled in Firebase  Functions or client SDK)
 - **Database**: Firebase Firestore
 - **Auth**: Firebase Google Authentication
 - **Storage**: Firebase Storage
-- **Hosting**: Firebase Hosting or GitHub Pages
+- **Hosting**:  GitHub Pages
 
 ## Getting Started
 
@@ -34,7 +34,7 @@ MaestraMind is a solo-developer-friendly adaptive learning web application that 
 
 1. Clone this repository
 2. Install dependencies with `npm install`
-3. Create a `.env` file in the root directory with your Firebase and Gemini API keys:
+3. Create a `env-config.js` file in the root directory with your Firebase and Gemini API keys:
    ```
    FIREBASE_API_KEY=your_firebase_api_key
    FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
@@ -45,37 +45,12 @@ MaestraMind is a solo-developer-friendly adaptive learning web application that 
    FIREBASE_MEASUREMENT_ID=your_measurement_id
    GEMINI_API_KEY=your_gemini_api_key
    ```
-4. Build the application with `npm run build`
-5. For GitHub Pages deployment:
-   - Update the `homepage` field in package.json with your GitHub username
-   - Run `npm run deploy` to deploy to GitHub Pages
-   - Set up repository secrets in GitHub for your environment variables
-
-## GitHub Pages Deployment
-
-To deploy this application to GitHub Pages, follow these steps:
-
-1. Create a GitHub repository for your project
-2. Push your code to the repository
-3. Set up repository secrets in GitHub:
-   - Go to your repository settings
-   - Click on "Secrets and variables" → "Actions"
-   - Add the following secrets:
-     - FIREBASE_API_KEY
-     - FIREBASE_AUTH_DOMAIN
-     - FIREBASE_PROJECT_ID
-     - FIREBASE_STORAGE_BUCKET
-     - FIREBASE_MESSAGING_SENDER_ID
-     - FIREBASE_APP_ID
-     - FIREBASE_MEASUREMENT_ID
-     - GEMINI_API_KEY
-4. Update the `homepage` field in package.json with your GitHub username and repository name
-5. Run `npm run deploy` or push to the main branch to trigger the GitHub Actions workflow
+4. Then just run it using `npx serve .`
 
 ## How It Works
 
 1. Users sign in with their Google account
-2. Users upload their study notes (text or files)
+2. Users upload their study notes ( text )
 3. The Gemini AI analyzes the notes and generates:
    - Course structure and topics
    - Summaries for each topic
@@ -95,11 +70,11 @@ To deploy this application to GitHub Pages, follow these steps:
 │   ├── app.js              # Main application script
 │   ├── auth.js             # Authentication module
 │   ├── dashboard.js        # Dashboard module
-│   ├── upload.js           # Upload module
+│   |
 │   ├── course.js           # Course module
 │   ├── gemini.js           # Gemini AI integration
 │   └── firebase-config.js  # Firebase configuration
-├── firebase-setup.md       # Firebase setup guide
+├- guide
 └── README.md               # Project documentation
 ```
 

@@ -5,10 +5,7 @@ firestore-debug.log
 ui-debug.log
 
 # API keys and secrets
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+
 
 # Dependencies
 node_modules/

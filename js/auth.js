@@ -1,84 +1,152 @@
-import { auth, db } from './firebase-config.js';
-import { GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db, googleProvider, signInWithPopup } from './firebase-config.js';
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { onAuthStateChanged, signOut as firebaseSignOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { loadUserCourses } from './dashboard.js';
 
 let currentUser = null;
 
-const loginButton = document.getElementById('login-button');
-const logoutButton = document.getElementById('logout-button');
-const userProfile = document.getElementById('user-profile');
-const userPhoto = document.getElementById('user-photo');
-const userName = document.getElementById('user-name');
-const getStartedBtn = document.getElementById('get-started-btn');
+const loadingOverlay = document.createElement('div');
+loadingOverlay.className = 'loading-overlay hidden';
+loadingOverlay.innerHTML = `
+    <div class="loading-spinner"></div>
+    <p id="loading-message">Loading...</p>
+`;
+document.body.appendChild(loadingOverlay);
+const loadingMessage = document.getElementById('loading-message');
 
-const landingPage = document.getElementById('landing-page');
-const dashboard = document.getElementById('dashboard');
+document.addEventListener('DOMContentLoaded', () => {
+    initAuthUI();
+});
 
-function signInWithGoogle() {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-        .catch(error => {
-            console.error('Error during sign in:', error);
-            alert('Failed to sign in. Please try again.');
-        });
+function initAuthUI() {
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    const getStartedBtn = document.getElementById('get-started-btn');
+    
+    if (loginButton) loginButton.addEventListener('click', signInWithGoogle);
+    if (logoutButton) logoutButton.addEventListener('click', signOut);
+    if (getStartedBtn) getStartedBtn.addEventListener('click', signInWithGoogle);
 }
 
-function signOut() {
-    firebaseSignOut(auth)
-        .catch(error => {
-            console.error('Error during sign out:', error);
-        });
+let landingPage;
+let dashboard;
+
+async function signInWithGoogle() {
+    try {
+        loadingOverlay.classList.remove('hidden');
+        loadingMessage.textContent = 'Signing in...';
+        
+        const result = await signInWithPopup(auth, googleProvider);
+        
+        loadingOverlay.classList.add('hidden');
+        showNotification('Success', 'Signed in successfully!', 'success');
+    } catch (error) {
+        console.error('Error during sign in:', error);
+        loadingOverlay.classList.add('hidden');
+        showNotification('Error', 'Failed to sign in. Please try again.', 'error');
+    }
 }
 
-function handleAuthStateChange(user) {
+async function signOut() {
+    try {
+        loadingOverlay.classList.remove('hidden');
+        loadingMessage.textContent = 'Signing out...';
+        
+        await firebaseSignOut(auth);
+        
+        loadingOverlay.classList.add('hidden');
+        showNotification('Success', 'Signed out successfully', 'success');
+    } catch (error) {
+        console.error('Error during sign out:', error);
+        loadingOverlay.classList.add('hidden');
+        showNotification('Error', 'Failed to sign out. Please try again.', 'error');
+    }
+}
+
+async function handleAuthStateChange(user) {
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    const userProfile = document.getElementById('user-profile');
+    const userPhoto = document.getElementById('user-photo');
+    const userName = document.getElementById('user-name');
+    landingPage = document.getElementById('landing-page');
+    dashboard = document.getElementById('dashboard');
+    
+    if (!loginButton || !logoutButton || !landingPage || !dashboard) {
+        console.warn('Auth UI elements not found, auth state change handling delayed');
+        return;
+    }
+    
     if (user) {
         currentUser = user;
         
-        loginButton.classList.add('hidden');
-        logoutButton.classList.remove('hidden');
-        userProfile.classList.remove('hidden');
+        if (loginButton) loginButton.classList.add('hidden');
+        if (logoutButton) logoutButton.classList.remove('hidden');
+        if (userProfile) userProfile.classList.remove('hidden');
         
-        userPhoto.src = user.photoURL || 'https://via.placeholder.com/32';
-        userName.textContent = user.displayName || user.email;
+        if (userPhoto) userPhoto.src = user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName || user.email) + '&background=4361ee&color=fff';
+        if (userName) userName.textContent = user.displayName || user.email;
         
         landingPage.classList.add('hidden');
         dashboard.classList.remove('hidden');
         
-        const userRef = doc(db, 'users', user.uid);
-        getDoc(userRef).then(docSnap => {
+        try {
+            const userRef = doc(db, 'users', user.uid);
+            const docSnap = await getDoc(userRef);
+            
+            const userData = {
+                uid: user.uid,
+                email: user.email,
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+                lastLogin: serverTimestamp()
+            };
+            
             if (!docSnap.exists()) {
-                setDoc(userRef, {
-                    uid: user.uid,
-                    email: user.email,
-                    displayName: user.displayName,
-                    photoURL: user.photoURL,
-                    createdAt: serverTimestamp()
-                });
+                userData.createdAt = serverTimestamp();
+                userData.role = 'user';
+                userData.preferences = {
+                    theme: 'light',
+                    notifications: true
+                };
+                
+                await setDoc(userRef, userData);
+                showNotification('Welcome', 'Your account has been created successfully!', 'success');
+            } else {
+                await updateDoc(userRef, userData);
             }
-        }).then(() => {
+            
+            const today = new Date().toDateString();
+            localStorage.setItem('lastLoginDate', today);
+            
+            if (!localStorage.getItem('studyStreak')) {
+                localStorage.setItem('studyStreak', '1');
+            }
+            
             loadUserCourses();
-        }).catch(error => {
+        } catch (error) {
             console.error('Error checking user document:', error);
-        });
+            showNotification('Error', 'Failed to load user data', 'error');
+        }
     } else {
         currentUser = null;
         
-        loginButton.classList.remove('hidden');
-        logoutButton.classList.add('hidden');
-        userProfile.classList.add('hidden');
+        if (loginButton) loginButton.classList.remove('hidden');
+        if (logoutButton) logoutButton.classList.add('hidden');
+        if (userProfile) userProfile.classList.add('hidden');
         
-        landingPage.classList.remove('hidden');
-        dashboard.classList.add('hidden');
+        if (landingPage) landingPage.classList.remove('hidden');
+        if (dashboard) dashboard.classList.add('hidden');
         
-        document.getElementById('upload-section').classList.add('hidden');
-        document.getElementById('course-view').classList.add('hidden');
+        const uploadSection = document.getElementById('upload-section');
+        const courseView = document.getElementById('course-view');
+        const studyTimer = document.getElementById('study-timer');
+        
+        if (uploadSection) uploadSection.classList.add('hidden');
+        if (courseView) courseView.classList.add('hidden');
+        if (studyTimer) studyTimer.classList.add('hidden');
     }
 }
-
-loginButton.addEventListener('click', signInWithGoogle);
-logoutButton.addEventListener('click', signOut);
-getStartedBtn.addEventListener('click', signInWithGoogle);
 
 onAuthStateChanged(auth, handleAuthStateChange);
 

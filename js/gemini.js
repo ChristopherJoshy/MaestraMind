@@ -1,18 +1,27 @@
+import { db } from './firebase-config.js';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { currentUser } from './auth.js';
+
 export { processNotesWithGemini };
 
 async function processNotesWithGemini(notesText) {
-    const prompt = `You are an intelligent tutor. Analyze the following study notes and extract:
-1. The main topics covered (5-7 topics)
-2. A summary of each topic
-3. Important flashcards (term → definition) for each topic
-4. Practice quiz questions for each topic (multiple choice)
-Output the result in a structured JSON format with the following structure:
+    const prompt = `You are an expert educational content creator and tutor. Analyze the following study notes and create a comprehensive learning experience by extracting:
+
+1. A clear, descriptive course title based on the content
+2. The main topics covered (5-7 topics)
+3. A detailed summary of the overall content (200-300 words)
+4. For each topic:
+   - Create a lesson with detailed explanations, examples, and key points
+   - Generate 5 important flashcards (term → definition) that capture key concepts
+   - Create 5 challenging multiple-choice quiz questions with 4 options each
+
+Format your response as a structured JSON object with the following schema:
 {
   "title": "Generated course title",
-  "summary": "Overall summary of the content",
+  "summary": "Comprehensive summary of the content",
   "topics": ["Topic 1", "Topic 2", ...],
   "lessons": [
-    {"title": "Topic 1", "content": "Detailed content for topic 1"},
+    {"title": "Topic 1", "content": "Detailed lesson content with HTML formatting for better readability"},
     ...
   ],
   "flashcards": [
@@ -20,20 +29,94 @@ Output the result in a structured JSON format with the following structure:
     ...
   ],
   "quizzes": [
-    {"topic": "Topic 1", "questions": [{"question": "Question text", "options": ["A", "B", "C", "D"], "correctAnswer": 0}, ...]},
+    {"topic": "Topic 1", "questions": [{"question": "Question text", "options": ["Option A", "Option B", "Option C", "Option D"], "correctAnswer": 0}, ...]},
     ...
   ]
-}`;
+}
+
+Make the content engaging, educational, and well-structured. Use HTML formatting in the lesson content for better readability (headings, paragraphs, lists, etc.).`;
 
     try {
+        // Log the processing request to Firebase
+        if (currentUser) {
+            try {
+                await addDoc(collection(db, 'aiProcessingLogs'), {
+                    userId: currentUser.uid,
+                    timestamp: serverTimestamp(),
+                    contentLength: notesText.length,
+                    contentPreview: notesText.substring(0, 200) + '...',
+                    status: 'processing'
+                });
+            } catch (logError) {
+                console.error('Error logging AI processing request:', logError);
+            }
+        }
+        
+        // Process the content with Gemini API
         const response = await callGeminiAPI(prompt, notesText);
-        return JSON.parse(response);
+        const cleanedResponse = cleanJsonResponse(response);
+        const processedData = JSON.parse(cleanedResponse);
+        
+        // Log the successful processing to Firebase
+        if (currentUser) {
+            try {
+                await addDoc(collection(db, 'aiProcessingLogs'), {
+                    userId: currentUser.uid,
+                    timestamp: serverTimestamp(),
+                    contentLength: notesText.length,
+                    status: 'completed',
+                    generatedTitle: processedData.title,
+                    topicsCount: processedData.topics.length,
+                    lessonsCount: processedData.lessons.length
+                });
+                
+                // Save the raw processed data for future reference
+                await addDoc(collection(db, 'rawProcessedData'), {
+                    userId: currentUser.uid,
+                    timestamp: serverTimestamp(),
+                    rawData: processedData,
+                    contentPreview: notesText.substring(0, 200) + '...'
+                });
+            } catch (logError) {
+                console.error('Error logging AI processing completion:', logError);
+            }
+        }
+        
+        return processedData;
     } catch (error) {
         console.error('Error processing notes with Gemini:', error);
+        showNotification('Warning', 'AI processing failed. Using fallback processing method.', 'warning');
+        
+        // Log the failed processing to Firebase
+        if (currentUser) {
+            try {
+                await addDoc(collection(db, 'aiProcessingLogs'), {
+                    userId: currentUser.uid,
+                    timestamp: serverTimestamp(),
+                    contentLength: notesText.length,
+                    status: 'failed',
+                    error: error.message
+                });
+            } catch (logError) {
+                console.error('Error logging AI processing failure:', logError);
+            }
+        }
         
         const topics = extractTopics(notesText);
         return generateCourseStructure(notesText, topics);
     }
+}
+
+function cleanJsonResponse(response) {
+    let cleanedResponse = response;
+    
+    if (response.includes('```json')) {
+        cleanedResponse = response.split('```json')[1].split('```')[0].trim();
+    } else if (response.includes('```')) {
+        cleanedResponse = response.split('```')[1].split('```')[0].trim();
+    }
+    
+    return cleanedResponse;
 }
 
 // Extract topics from notes (placeholder function)
@@ -199,7 +282,7 @@ function generateQuizForTopic(topic, text) {
 }
 
 async function callGeminiAPI(prompt, text) {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = window.ENV.GEMINI_API_KEY;
     const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
     
     try {

@@ -5,8 +5,8 @@
   "main": "js/app.js",
   "homepage": "https://yourusername.github.io/MaestraMind",
   "scripts": {
-    "setup-env": "node scripts/set-env.js",
-    "start": "npm run setup-env && webpack serve --mode development",
+    "start": "node server.js",
+    "dev": "webpack serve --mode development",
     "build": "webpack --mode production",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d ."
@@ -21,7 +21,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "firebase": "^10.7.1"
+    "firebase": "^10.7.1",
+    "express": "^4.18.2"
   },
   "devDependencies": {
     "@babel/core": "^7.23.5",

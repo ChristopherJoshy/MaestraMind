@@ -1,128 +1,316 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MaestraMind - AI-Powered Adaptive Learning</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- No Firebase SDK imports here as we're using ES modules -->
+    <meta name="description" content="Transform your study notes into personalized learning experiences with AI-powered adaptive learning.">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <!-- Environment Variables -->
+    <script src="env-config.js"></script>
 </head>
 <body>
+    <div class="notifications-container"></div>
     <div class="app-container">
-        <!-- Navigation -->
         <nav id="main-nav">
             <div class="logo">
+                <i class="fas fa-brain logo-icon"></i>
                 <h1>MaestraMind</h1>
             </div>
             <div class="nav-links">
-                <div id="user-profile" class="hidden">
-                    <img id="user-photo" src="" alt="Profile">
-                    <span id="user-name"></span>
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search courses...">
+                    <div id="search-results" class="search-results"></div>
                 </div>
-                <button id="login-button" class="btn btn-primary">Sign in with Google</button>
-                <button id="logout-button" class="btn btn-outline hidden">Sign Out</button>
+                <div class="nav-controls">
+                    <a href="#about-section" class="nav-link">About</a>
+                    <button id="theme-toggle" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div id="user-profile" class="hidden">
+                        <img id="user-photo" src="" alt="Profile">
+                        <span id="user-name"></span>
+                    </div>
+
+                    <button id="login-button" class="btn btn-primary"><i class="fab fa-google"></i> Sign in with Google</button>
+                    <button id="logout-button" class="btn btn-outline hidden">Sign Out</button>
+                </div>
             </div>
         </nav>
 
-        <!-- Main Content Area -->
         <main>
-            <!-- Landing Page (shown when not logged in) -->
             <section id="landing-page">
                 <div class="hero">
                     <h1>Transform Your Notes into Personalized Learning</h1>
-                    <p>Upload your study materials and let our AI create a customized learning experience just for you.</p>
-                    <button id="get-started-btn" class="btn btn-primary btn-large">Get Started</button>
+                    <p>Upload your study materials and let our AI create a customized learning experience just for you. Master any subject with adaptive quizzes, flashcards, and personalized feedback.</p>
+                    <div class="hero-buttons">
+                        <button id="get-started-btn" class="btn btn-primary btn-large"><i class="fas fa-rocket"></i> Get Started</button>
+                        <button id="learn-more-btn" class="btn btn-outline btn-large"><i class="fas fa-info-circle"></i> Learn More</button>
+                    </div>
                 </div>
                 <div class="features">
                     <div class="feature-card">
-                        <i class="fas fa-file-upload"></i>
-                        <h3>Upload Multiple Notes</h3>
-                        <p>Text input or file uploads supported</p>
+                        <i class="fas fa-keyboard"></i>
+                        <h3>Enter Your Notes</h3>
+                        <p>Simply paste your study notes and our AI will transform them into a structured learning experience.</p>
                     </div>
                     <div class="feature-card">
                         <i class="fas fa-brain"></i>
                         <h3>AI-Powered Analysis</h3>
-                        <p>Gemini AI processes your content</p>
+                        <p>Gemini AI processes your content to extract key concepts, create summaries, and generate interactive learning materials.</p>
                     </div>
                     <div class="feature-card">
                         <i class="fas fa-graduation-cap"></i>
                         <h3>Personalized Learning</h3>
-                        <p>Adaptive paths based on your progress</p>
+                        <p>Adaptive learning paths based on your progress and performance. Focus on areas where you need the most improvement.</p>
                     </div>
                     <div class="feature-card">
                         <i class="fas fa-chart-line"></i>
                         <h3>Track Progress</h3>
-                        <p>Real-time insights into your learning</p>
+                        <p>Real-time insights into your learning with detailed analytics, progress tracking, and performance metrics.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Study Timer</h3>
+                        <p>Built-in study timer with Pomodoro technique support to help you manage your study sessions effectively.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-share-alt"></i>
+                        <h3>Share & Collaborate</h3>
+                        <p>Share your courses with friends or study groups. Learn together and motivate each other.</p>
                     </div>
                 </div>
+                
+                <section id="about-section" class="about-section">
+                    <h2>About the Creator <span class="emoji">✨</span></h2>
+                    <div class="about-content">
+                        <div class="about-text">
+                            <h3>Christopher Joshy</h3>
+                            <p class="subtitle">Aspiring Coder | Game Developer in Training | Web Design Enthusiast</p>
+                            <p class="about-desc">
+                                Currently diving into C# and pursuing my B.Tech in Computer Science at St. Joseph's College of Engineering. 
+                                Passionate about creating immersive digital experiences and exploring new technologies. MaestraMind is my contribution 
+                                to help fellow students access quality study materials with a modern, user-friendly interface.
+                            </p>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-number" id="github-stars">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </div>
+                                    <div class="stat-label">Total Stars</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number" id="github-commits">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </div>
+                                    <div class="stat-label">Commits</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number" id="github-prs">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </div>
+                                    <div class="stat-label">Total PRs</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number" id="github-contributions">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </div>
+                                    <div class="stat-label">Repositories</div>
+                                </div>
+                            </div>
+
+                            <div class="education-section">
+                                <h4 class="education-title">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    Education
+                                </h4>
+                                <div class="education-info">
+                                    <p class="degree">B.Tech in Computer Science</p>
+                                    <p class="institution">St. Joseph's College of Engineering</p>
+                                </div>
+                            </div>
+
+                            <div class="languages-section">
+                                <div class="language-item">
+                                    <i class="fab fa-java"></i>
+                                    Java
+                                </div>
+                                <div class="language-item">
+                                    <i class="fab fa-cuttlefish"></i>
+                                    C#
+                                </div>
+                                <div class="language-item">
+                                    <i class="fas fa-code"></i>
+                                    C++
+                                </div>
+                                <div class="language-item">
+                                    <i class="fab fa-python"></i>
+                                    Python
+                                </div>
+                                <div class="language-item">
+                                    <i class="fab fa-html5"></i>
+                                    HTML5
+                                </div>
+                                <div class="language-item">
+                                    <i class="fab fa-css3-alt"></i>
+                                    CSS3
+                                </div>
+                                <div class="language-item">
+                                    <i class="fab fa-js"></i>
+                                    JavaScript
+                                </div>
+                                <div class="language-item">
+                                    <i class="fas fa-gamepad"></i>
+                                    Unreal Engine
+                                </div>
+                            </div>
+
+                            <div class="social-links">
+                                <a href="https://github.com/ChristopherJoshy" target="_blank" class="social-link">
+                                    <i class="fab fa-github"></i>
+                                    GitHub
+                                </a>
+                                <a href="https://www.instagram.com/calculatederror/" target="_blank" class="social-link">
+                                    <i class="fab fa-instagram"></i>
+                                    Instagram
+                                </a>
+                                <a href="mailto:Christopherjoshy4@gmail.com" class="social-link">
+                                    <i class="fas fa-envelope"></i>
+                                    Email
+                                </a>
+                            </div>
+                        </div>
+                        <div class="about-image">
+                            <div class="profile-container">
+                                <div class="profile-emoji">👨‍💻</div>
+                                <div class="skill-badge">🎮</div>
+                                <div class="skill-badge">💻</div>
+                                <div class="skill-badge">🎨</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </section>
 
-            <!-- Dashboard (shown when logged in) -->
             <section id="dashboard" class="hidden">
-                <div class="dashboard-header">
-                    <h2>Your Learning Dashboard</h2>
-                    <button id="upload-notes-btn" class="btn btn-primary">Upload New Notes</button>
-                </div>
-                
-                <div class="courses-container">
-                    <h3>Your Courses</h3>
-                    <div id="courses-list" class="courses-grid">
-                        <!-- Courses will be dynamically added here -->
-                        <div class="empty-state hidden">
-                            <p>You don't have any courses yet. Upload your notes to get started!</p>
+                <div class="dashboard-container">
+                    <div class="dashboard-header">
+                        <h2><i class="fas fa-tachometer-alt"></i> Your Learning Dashboard</h2>
+                        <button id="upload-notes-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Course</button>
+                    </div>
+                    
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon courses">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>Total Courses</h4>
+                                <p id="total-courses">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon progress">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>Overall Progress</h4>
+                                <p id="overall-progress">0%</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon time">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>Study Time</h4>
+                                <p id="study-time">0h</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon streak">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>Study Streak</h4>
+                                <p id="study-streak">0 days</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="courses-container">
+                        <div class="courses-header">
+                            <h3><i class="fas fa-graduation-cap"></i> Your Courses</h3>
+                            <div class="courses-filter">
+                                <button class="filter-btn active" data-filter="all"><i class="fas fa-th-large"></i> All</button>
+                                <button class="filter-btn" data-filter="in-progress"><i class="fas fa-spinner"></i> In Progress</button>
+                                <button class="filter-btn" data-filter="completed"><i class="fas fa-check-circle"></i> Completed</button>
+                                <button class="filter-btn" data-filter="recent"><i class="fas fa-clock"></i> Recent</button>
+                            </div>
+                        </div>
+                        <div id="courses-list" class="courses-grid">
+                            <div class="empty-state hidden">
+                                <i class="fas fa-graduation-cap"></i>
+                                <p>You don't have any courses yet. Create your first course to start your learning journey!</p>
+                                <button id="empty-upload-btn" class="btn btn-primary btn-large"><i class="fas fa-plus"></i> Create Your First Course</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Upload Notes Section -->
             <section id="upload-section" class="hidden">
                 <div class="upload-container">
-                    <h2>Upload Your Study Notes</h2>
-                    <p>Upload your notes and our AI will create a personalized learning experience for you.</p>
-                    
-                    <div class="upload-options">
-                        <div class="upload-tab active" data-tab="text">Text Input</div>
-                        <div class="upload-tab" data-tab="file">File Upload</div>
+                    <div class="upload-header">
+                        <h2>Create New Course</h2>
+                        <p>Enter your study notes below and our AI will create a personalized learning experience for you.</p>
                     </div>
                     
                     <div class="upload-content">
                         <div id="text-upload" class="upload-panel active">
                             <textarea id="notes-text" placeholder="Paste your notes here..."></textarea>
-                            <button id="submit-text" class="btn btn-primary">Process Notes</button>
-                        </div>
-                        
-                        <div id="file-upload" class="upload-panel">
-                            <div class="file-drop-area">
-                                <span class="file-message">Drag & drop files or click to browse</span>
-                                <input type="file" id="file-input" accept=".pdf,.txt,.md,.docx" multiple>
-                            </div>
-                            <div id="file-list"></div>
-                            <button id="submit-files" class="btn btn-primary">Upload & Process</button>
+                            <button id="submit-text" class="btn btn-primary"><i class="fas fa-robot"></i> Process with AI</button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Course View Section -->
             <section id="course-view" class="hidden">
                 <div class="course-header">
                     <button class="back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
                     <h2 id="course-title">Course Title</h2>
+                    <div class="course-actions">
+                        <div class="social-share">
+                            <div class="share-btn share-twitter" title="Share on Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                            <div class="share-btn share-facebook" title="Share on Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <div class="share-btn share-linkedin" title="Share on LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </div>
+                            <div class="share-btn share-email" title="Share via Email">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="course-content">
                     <div class="course-sidebar">
                         <div class="course-summary">
-                            <h3>Summary</h3>
+                            <h3><i class="fas fa-info-circle"></i> Summary</h3>
                             <p id="course-summary-text"></p>
                         </div>
                         <div class="course-lessons">
-                            <h3>Lessons</h3>
-                            <ul id="lessons-list">
-                                <!-- Lessons will be dynamically added here -->
-                            </ul>
+                            <h3><i class="fas fa-list"></i> Lessons</h3>
+                            <ul id="lessons-list"></ul>
                         </div>
                     </div>
                     
@@ -131,40 +319,1169 @@
                             <h3 id="lesson-title">Lesson Title</h3>
                             <div id="lesson-text"></div>
                             
-                            <div id="quiz-container" class="hidden">
-                                <h4>Quiz</h4>
-                                <div id="quiz-questions">
-                                    <!-- Quiz questions will be dynamically added here -->
-                                </div>
-                                <button id="submit-quiz" class="btn btn-primary">Submit Answers</button>
+                            <div class="lesson-actions">
+                                <button id="prev-lesson" class="btn btn-outline"><i class="fas fa-chevron-left"></i> Previous</button>
+                                <button id="mark-complete" class="btn btn-success"><i class="fas fa-check"></i> Mark as Complete</button>
+                                <button id="next-lesson" class="btn btn-primary">Next <i class="fas fa-chevron-right"></i></button>
                             </div>
                             
-                            <div id="flashcards-container" class="hidden">
-                                <h4>Flashcards</h4>
-                                <div class="flashcards-deck">
-                                    <!-- Flashcards will be dynamically added here -->
+                            <div class="notes-section">
+                                <h4><i class="fas fa-sticky-note"></i> Your Notes</h4>
+                                <textarea id="lesson-notes" placeholder="Take notes on this lesson..."></textarea>
+                                <button id="save-notes" class="btn btn-primary"><i class="fas fa-save"></i> Save Notes</button>
+                            </div>
+                            
+                            <div id="quiz-container" class="quiz-section hidden">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-question-circle"></i> Quiz</h4>
+                                    <button id="reset-quiz" class="btn btn-outline"><i class="fas fa-redo"></i> Reset</button>
                                 </div>
+                                <div id="quiz-questions"></div>
+                                <button id="submit-quiz" class="btn btn-primary"><i class="fas fa-check-circle"></i> Submit Answers</button>
+                            </div>
+                            
+                            <div id="flashcards-container" class="flashcards-section hidden">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-clone"></i> Flashcards</h4>
+                                    <div class="flashcard-controls">
+                                        <button id="prev-card" class="flashcard-btn"><i class="fas fa-chevron-left"></i></button>
+                                        <span id="card-counter">1/5</span>
+                                        <button id="next-card" class="flashcard-btn"><i class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                                <div class="flashcards-deck"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Loading Overlay -->
             <div id="loading-overlay" class="hidden">
                 <div class="loader"></div>
                 <p id="loading-message">Processing your notes with AI...</p>
             </div>
+            
+            <div id="notification" class="notification">
+                <div class="notification-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">Success</div>
+                    <div class="notification-message">Operation completed successfully</div>
+                </div>
+                <button class="notification-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div id="confirm-modal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modal-title">Confirm Action</h3>
+                        <button class="modal-close"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modal-message">Are you sure you want to proceed with this action?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="modal-cancel" class="btn btn-outline">Cancel</button>
+                        <button id="modal-confirm" class="btn btn-danger">Confirm</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="study-timer" class="study-timer">
+                <div class="timer-header">
+                    <span class="timer-state">Focus</span>
+                    <div class="timer-controls">
+                        <button id="settings-btn" class="timer-btn" title="Settings"><i class="fas fa-cog"></i></button>
+                        <button id="minimize-timer" class="timer-btn" title="Minimize"><i class="fas fa-minus"></i></button>
+                        <button id="close-timer" class="timer-btn" title="Close"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                
+                <div class="timer-modes">
+                    <button id="pomodoro-btn" class="timer-mode-btn active">Focus</button>
+                    <button id="short-break-btn" class="timer-mode-btn">Short Break</button>
+                    <button id="long-break-btn" class="timer-mode-btn">Long Break</button>
+                </div>
+                
+                <div class="timer-display">25:00</div>
+                <div class="pomodoro-count">0 completed</div>
+                
+                <div class="timer-buttons">
+                    <button id="start-timer" class="btn btn-primary"><i class="fas fa-play"></i> Start</button>
+                    <button id="reset-timer" class="btn btn-outline"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+                
+                <div id="timer-settings" class="timer-settings hidden">
+                    <h4>Timer Settings</h4>
+                    <div class="settings-group">
+                        <label for="pomodoro-minutes">Focus Duration (minutes)</label>
+                        <input type="number" id="pomodoro-minutes" min="1" max="60" value="25">
+                    </div>
+                    <div class="settings-group">
+                        <label for="short-break-minutes">Short Break (minutes)</label>
+                        <input type="number" id="short-break-minutes" min="1" max="30" value="5">
+                    </div>
+                    <div class="settings-group">
+                        <label for="long-break-minutes">Long Break (minutes)</label>
+                        <input type="number" id="long-break-minutes" min="1" max="60" value="15">
+                    </div>
+                    <div class="settings-group">
+                        <label for="long-break-interval">Long Break After (pomodoros)</label>
+                        <input type="number" id="long-break-interval" min="1" max="10" value="4">
+                    </div>
+                    <div class="settings-group checkbox">
+                        <input type="checkbox" id="auto-start-breaks">
+                        <label for="auto-start-breaks">Auto-start Breaks</label>
+                    </div>
+                    <div class="settings-group checkbox">
+                        <input type="checkbox" id="auto-start-pomodoros">
+                        <label for="auto-start-pomodoros">Auto-start Pomodoros</label>
+                    </div>
+                    <div class="settings-group">
+                        <label for="volume-slider">Alarm Volume</label>
+                        <input type="range" id="volume-slider" min="0" max="100" value="50">
+                    </div>
+                    <button id="save-settings" class="btn btn-primary">Save Settings</button>
+                </div>
+                <div class="timer-modes">
+                    <button id="pomodoro-btn" class="timer-mode-btn active">Pomodoro</button>
+                    <button id="short-break-btn" class="timer-mode-btn">Short Break</button>
+                    <button id="long-break-btn" class="timer-mode-btn">Long Break</button>
+                </div>
+            </div>
         </main>
-
-        <!-- Footer -->
-        <footer>
-            <p>&copy; 2023 MaestraMind. All rights reserved.</p>
-            <p>Powered by Gemini AI and Firebase</p>
-        </footer>
     </div>
 
-    <!-- Application Scripts -->
-    <script src="dist/bundle.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/study-timer.js"></script>
+    <script type="module" src="js/ai-processor.js"></script>
+    <script>
+        // Notification function
+        function showNotification(title, message, type = 'info') {
+            const notificationsContainer = document.querySelector('.notifications-container');
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-icon">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                    type === 'error' ? 'fa-exclamation-circle' : 
+                                    type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+                </div>
+                <div class="notification-content">
+                    <h4>${title}</h4>
+                    <p>${message}</p>
+                </div>
+                <button class="notification-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            notificationsContainer.appendChild(notification);
+            
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+
+            const timeout = setTimeout(() => {
+                removeNotification(notification);
+            }, 5000);
+            
+
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                clearTimeout(timeout);
+                removeNotification(notification);
+            });
+        }
+        
+        function removeNotification(notification) {
+            notification.classList.remove('show');
+            notification.classList.add('hide');
+            
+
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded and parsed');
+            
+
+            
+            // Theme Toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                
+                if (currentTheme === 'dark') {
+                    themeToggle.querySelector('i').className = 'fas fa-sun';
+                } else {
+                    themeToggle.querySelector('i').className = 'fas fa-moon';
+                }
+                
+                themeToggle.addEventListener('click', () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    
+                    const icon = themeToggle.querySelector('i');
+                    if (newTheme === 'dark') {
+                        icon.className = 'fas fa-sun';
+                    } else {
+                        icon.className = 'fas fa-moon';
+                    }
+                });
+            }
+            
+            // Study Timer
+            const studyTimer = document.getElementById('study-timer');
+            if (studyTimer) {
+                const timerDisplay = studyTimer.querySelector('.timer-display');
+                const startBtn = document.getElementById('start-timer');
+                const resetBtn = document.getElementById('reset-timer');
+                const minimizeBtn = document.getElementById('minimize-timer');
+                const closeBtn = document.getElementById('close-timer');
+                
+                let timerInterval;
+                let timeLeft = 25 * 60; // 25 minutes in seconds
+                let isRunning = false;
+                
+                function updateTimerDisplay() {
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+                
+                function startTimer() {
+                    if (isRunning) return;
+                    
+                    isRunning = true;
+                    startBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                    
+                    timerInterval = setInterval(() => {
+                        timeLeft--;
+                        updateTimerDisplay();
+                        
+                        if (timeLeft <= 0) {
+                            clearInterval(timerInterval);
+                            isRunning = false;
+                            startBtn.innerHTML = '<i class="fas fa-play"></i> Start';
+                            
+                            // Show notification
+                            alert('Timer complete!');
+                        }
+                    }, 1000);
+                }
+                
+                function pauseTimer() {
+                    if (!isRunning) return;
+                    
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    startBtn.innerHTML = '<i class="fas fa-play"></i> Start';
+                }
+                
+                function resetTimer() {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    timeLeft = 25 * 60;
+                    updateTimerDisplay();
+                    startBtn.innerHTML = '<i class="fas fa-play"></i> Start';
+                }
+                
+                // Event listeners
+                startBtn.addEventListener('click', () => {
+                    if (isRunning) {
+                        pauseTimer();
+                    } else {
+                        startTimer();
+                    }
+                });
+                
+                resetBtn.addEventListener('click', resetTimer);
+                
+                minimizeBtn.addEventListener('click', () => {
+                    studyTimer.classList.toggle('minimized');
+                });
+                
+                closeBtn.addEventListener('click', () => {
+                    studyTimer.classList.add('hidden');
+                    pauseTimer();
+                });
+                
+                // Initialize
+                updateTimerDisplay();
+                
+                // Make sure the timer is initially hidden
+                studyTimer.classList.add('hidden');
+                
+                // Add timer toggle button to the header
+                const navControls = document.querySelector('.nav-controls');
+                if (navControls) {
+                    const timerToggleBtn = document.createElement('button');
+                    timerToggleBtn.className = 'timer-toggle-btn';
+                    timerToggleBtn.innerHTML = '<i class="fas fa-clock"></i>';
+                    timerToggleBtn.setAttribute('title', 'Toggle Study Timer');
+                    timerToggleBtn.addEventListener('click', () => {
+                        studyTimer.classList.toggle('hidden');
+                    });
+                    
+                    navControls.insertBefore(timerToggleBtn, navControls.firstChild);
+                }
+            }
+            
+            // Authentication
+            const loginButton = document.getElementById('login-button');
+            const logoutButton = document.getElementById('logout-button');
+            const userProfile = document.getElementById('user-profile');
+            const userPhoto = document.getElementById('user-photo');
+            const userName = document.getElementById('user-name');
+            
+            // Dashboard elements
+            const landingPage = document.getElementById('landing-page');
+            const dashboard = document.getElementById('dashboard');
+            const uploadSection = document.getElementById('upload-section');
+            const courseView = document.getElementById('course-view');
+            const uploadNotesBtn = document.getElementById('upload-notes-btn');
+            const emptyUploadBtn = document.getElementById('empty-upload-btn');
+            const backToDashboardBtn = document.querySelector('.back-btn');
+            
+            // User data
+            let userData = {
+                courses: [],
+                totalStudyTime: 0,
+                streak: 1,
+                notes: []
+            };
+            
+            // Authentication functions
+            function signIn() {
+                showNotification('Sign In', 'Simulating Google sign-in process...', 'info');
+                
+                // Simulate sign-in process
+                setTimeout(() => {
+                    // Hide login button, show logout button and user profile
+                    loginButton.classList.add('hidden');
+                    if (logoutButton) logoutButton.classList.remove('hidden');
+                    if (userProfile) userProfile.classList.remove('hidden');
+                    
+                    // Set user info
+                    if (userPhoto) userPhoto.src = 'https://ui-avatars.com/api/?name=Test+User&background=4361ee&color=fff';
+                    if (userName) userName.textContent = 'Test User';
+                    
+                    // Show dashboard, hide landing page
+                    if (landingPage) landingPage.classList.add('hidden');
+                    if (dashboard) dashboard.classList.remove('hidden');
+                    
+                    // Initialize dashboard
+                    initDashboard();
+                    
+                    showNotification('Success', 'Signed in successfully!', 'success');
+                }, 1000);
+            }
+            
+            function signOut() {
+                showNotification('Sign Out', 'Signing out...', 'info');
+                
+                // Simulate sign-out process
+                setTimeout(() => {
+                    // Show login button, hide logout button and user profile
+                    if (loginButton) loginButton.classList.remove('hidden');
+                    logoutButton.classList.add('hidden');
+                    if (userProfile) userProfile.classList.add('hidden');
+                    
+                    // Show landing page, hide dashboard and other sections
+                    if (landingPage) landingPage.classList.remove('hidden');
+                    if (dashboard) dashboard.classList.add('hidden');
+                    if (uploadSection) uploadSection.classList.add('hidden');
+                    if (courseView) courseView.classList.add('hidden');
+                    
+                    showNotification('Success', 'Signed out successfully!', 'success');
+                }, 1000);
+            }
+            
+            // Dashboard functions
+            function initDashboard() {
+                // Update dashboard stats
+                document.getElementById('total-courses').textContent = userData.courses.length;
+                document.getElementById('overall-progress').textContent = calculateOverallProgress() + '%';
+                document.getElementById('study-time').textContent = formatStudyTime(userData.totalStudyTime);
+                document.getElementById('study-streak').textContent = userData.streak + ' days';
+                
+                // Show empty state if no courses
+                const coursesList = document.getElementById('courses-list');
+                const emptyState = coursesList.querySelector('.empty-state');
+                
+                if (userData.courses.length === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                    renderCourses();
+                }
+            }
+            
+            function calculateOverallProgress() {
+                if (userData.courses.length === 0) return 0;
+                
+                const totalProgress = userData.courses.reduce((sum, course) => sum + course.progress, 0);
+                return Math.round(totalProgress / userData.courses.length);
+            }
+            
+            function formatStudyTime(minutes) {
+                if (minutes < 60) return minutes + 'm';
+                const hours = Math.floor(minutes / 60);
+                const mins = minutes % 60;
+                return hours + 'h' + (mins > 0 ? ' ' + mins + 'm' : '');
+            }
+            
+            function renderCourses() {
+                const coursesList = document.getElementById('courses-list');
+                const emptyState = coursesList.querySelector('.empty-state');
+                
+                // Clear existing courses except empty state
+                Array.from(coursesList.children).forEach(child => {
+                    if (!child.classList.contains('empty-state')) {
+                        child.remove();
+                    }
+                });
+                
+                // Add courses
+                userData.courses.forEach(course => {
+                    const courseCard = document.createElement('div');
+                    courseCard.className = 'course-card';
+                    courseCard.dataset.id = course.id;
+                    courseCard.dataset.status = course.progress === 100 ? 'completed' : 'in-progress';
+                    
+                    courseCard.innerHTML = `
+                        <div class="course-card-header">
+                            <h3>${course.title}</h3>
+                            <div class="course-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${course.progress}%"></div>
+                                </div>
+                                <span>${course.progress}%</span>
+                            </div>
+                        </div>
+                        <div class="course-card-body">
+                            <p>${course.summary}</p>
+                        </div>
+                        <div class="course-card-footer">
+                            <span class="course-lessons-count">${course.lessons.length} Lessons</span>
+                            <button class="btn btn-primary btn-sm view-course-btn">Continue</button>
+                        </div>
+                    `;
+                    
+                    coursesList.appendChild(courseCard);
+                    
+                    // Add event listener to view course button
+                    const viewCourseBtn = courseCard.querySelector('.view-course-btn');
+                    viewCourseBtn.addEventListener('click', () => {
+                        viewCourse(course.id);
+                    });
+                });
+                
+                // Show/hide empty state
+                if (userData.courses.length === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                }
+            }
+            
+            // Event listeners for authentication
+            if (loginButton) {
+                loginButton.addEventListener('click', signIn);
+            }
+            
+            if (logoutButton) {
+                logoutButton.addEventListener('click', signOut);
+            }
+            
+            // Upload and Course View functions
+            function showUploadSection() {
+                if (dashboard) dashboard.classList.add('hidden');
+                if (courseView) courseView.classList.add('hidden');
+                if (uploadSection) uploadSection.classList.remove('hidden');
+                
+                // Set up upload tabs
+                const uploadTabs = document.querySelectorAll('.upload-tab');
+                const uploadPanels = document.querySelectorAll('.upload-panel');
+                
+                uploadTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const tabId = tab.dataset.tab;
+                        
+                        // Update active tab
+                        uploadTabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        
+                        // Show corresponding panel
+                        uploadPanels.forEach(panel => {
+                            panel.classList.remove('active');
+                        });
+                        document.getElementById(tabId + '-upload').classList.add('active');
+                    });
+                });
+                
+                // Set up file drop area
+                const fileDropArea = document.querySelector('.file-drop-area');
+                const fileInput = document.getElementById('file-input');
+                const fileList = document.getElementById('file-list');
+                
+                if (fileDropArea && fileInput) {
+                    fileDropArea.addEventListener('click', () => {
+                        fileInput.click();
+                    });
+                    
+                    fileDropArea.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        fileDropArea.classList.add('active');
+                    });
+                    
+                    fileDropArea.addEventListener('dragleave', () => {
+                        fileDropArea.classList.remove('active');
+                    });
+                    
+                    fileDropArea.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        fileDropArea.classList.remove('active');
+                        
+                        if (e.dataTransfer.files.length > 0) {
+                            handleFiles(e.dataTransfer.files);
+                        }
+                    });
+                    
+                    fileInput.addEventListener('change', () => {
+                        if (fileInput.files.length > 0) {
+                            handleFiles(fileInput.files);
+                        }
+                    });
+                }
+                
+                // Handle file uploads
+                function handleFiles(files) {
+                    fileList.innerHTML = '';
+                    
+                    Array.from(files).forEach(file => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        
+                        const fileIcon = getFileIcon(file.name);
+                        
+                        fileItem.innerHTML = `
+                            <div class="file-info">
+                                <i class="${fileIcon}"></i>
+                                <span class="file-name">${file.name}</span>
+                                <span class="file-size">${formatFileSize(file.size)}</span>
+                            </div>
+                            <button class="remove-file"><i class="fas fa-times"></i></button>
+                        `;
+                        
+                        fileList.appendChild(fileItem);
+                        
+                        // Remove file button
+                        const removeBtn = fileItem.querySelector('.remove-file');
+                        removeBtn.addEventListener('click', () => {
+                            fileItem.remove();
+                        });
+                    });
+                }
+                
+                function getFileIcon(filename) {
+                    const ext = filename.split('.').pop().toLowerCase();
+                    
+                    switch (ext) {
+                        case 'pdf': return 'fas fa-file-pdf';
+                        case 'txt': return 'fas fa-file-alt';
+                        case 'md': return 'fab fa-markdown';
+                        case 'docx': return 'fas fa-file-word';
+                        default: return 'fas fa-file';
+                    }
+                }
+                
+                function formatFileSize(bytes) {
+                    if (bytes < 1024) return bytes + ' B';
+                    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+                    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+                }
+                
+                // Process notes with AI
+                const submitTextBtn = document.getElementById('submit-text');
+                const submitFilesBtn = document.getElementById('submit-files');
+                const loadingOverlay = document.getElementById('loading-overlay');
+                const loadingMessage = document.getElementById('loading-message');
+                
+                if (submitTextBtn) {
+                    submitTextBtn.addEventListener('click', () => {
+                        const notesText = document.getElementById('notes-text').value.trim();
+                        
+                        if (!notesText) {
+                            showNotification('Error', 'Please enter some notes to process', 'error');
+                            return;
+                        }
+                        
+                        processNotesWithAI(notesText);
+                    });
+                }
+                
+                if (submitFilesBtn) {
+                    submitFilesBtn.addEventListener('click', () => {
+                        const fileItems = fileList.querySelectorAll('.file-item');
+                        
+                        if (fileItems.length === 0) {
+                            showNotification('Error', 'Please upload at least one file', 'error');
+                            return;
+                        }
+                        
+                        // Simulate processing files
+                        processNotesWithAI('File content would be extracted here');
+                    });
+                }
+            }
+            
+            function processNotesWithAI(notesContent) {
+                const loadingOverlay = document.getElementById('loading-overlay');
+                const loadingMessage = document.getElementById('loading-message');
+                
+                if (loadingOverlay && loadingMessage) {
+                    loadingOverlay.classList.remove('hidden');
+                    loadingMessage.textContent = 'Processing your notes with AI...';
+                    
+                    // Simulate AI processing
+                    setTimeout(() => {
+                        // Generate a new course
+                        const courseId = 'course-' + Date.now();
+                        const newCourse = generateCourse(courseId, notesContent);
+                        
+                        // Add to user data
+                        userData.courses.push(newCourse);
+                        
+                        // Update dashboard
+                        initDashboard();
+                        
+                        // Hide loading overlay
+                        loadingOverlay.classList.add('hidden');
+                        
+                        // Show dashboard
+                        if (uploadSection) uploadSection.classList.add('hidden');
+                        if (dashboard) dashboard.classList.remove('hidden');
+                        
+                        showNotification('Success', 'Your notes have been processed successfully!', 'success');
+                    }, 3000);
+                }
+            }
+            
+            function generateCourse(id, notesContent) {
+                // Extract a title from the notes (first line or generated)
+                let title = notesContent.split('\\n')[0].trim();
+                if (title.length > 50) title = title.substring(0, 47) + '...';
+                if (title.length < 10) title = 'Course on ' + generateRandomTopic();
+                
+                // Generate a summary
+                const summary = 'This course covers key concepts and principles related to ' + 
+                                generateRandomTopic() + '. You will learn fundamental theories and practical applications.';
+                
+                // Generate lessons
+                const lessonCount = Math.floor(Math.random() * 5) + 3; // 3-7 lessons
+                const lessons = [];
+                
+                for (let i = 0; i < lessonCount; i++) {
+                    lessons.push({
+                        id: 'lesson-' + i,
+                        title: 'Lesson ' + (i + 1) + ': ' + generateRandomLessonTitle(),
+                        content: generateLessonContent(),
+                        completed: false,
+                        quiz: generateQuiz(),
+                        flashcards: generateFlashcards()
+                    });
+                }
+                
+                return {
+                    id: id,
+                    title: title,
+                    summary: summary,
+                    lessons: lessons,
+                    progress: 0,
+                    createdAt: new Date().toISOString(),
+                    lastAccessed: new Date().toISOString()
+                };
+            }
+            
+            function generateRandomTopic() {
+                const topics = [
+                    'Machine Learning', 'Data Structures', 'Algorithms', 
+                    'Web Development', 'Artificial Intelligence', 'Computer Networks',
+                    'Database Systems', 'Operating Systems', 'Software Engineering',
+                    'Cybersecurity', 'Cloud Computing', 'Mobile Development'
+                ];
+                return topics[Math.floor(Math.random() * topics.length)];
+            }
+            
+            function generateRandomLessonTitle() {
+                const titles = [
+                    'Introduction and Overview', 'Core Concepts', 'Advanced Techniques',
+                    'Practical Applications', 'Case Studies', 'Future Directions',
+                    'Theoretical Foundations', 'Implementation Strategies', 'Best Practices',
+                    'Performance Optimization', 'Security Considerations', 'Integration Methods'
+                ];
+                return titles[Math.floor(Math.random() * titles.length)];
+            }
+            
+            function generateLessonContent() {
+                return `
+                    <p>This lesson covers important concepts and principles that form the foundation of this topic. Understanding these concepts is crucial for mastering the subject matter.</p>
+                    
+                    <h4>Key Points</h4>
+                    <ul>
+                        <li>First key point with detailed explanation and examples to illustrate the concept clearly.</li>
+                        <li>Second key point that builds upon the first and introduces more advanced ideas.</li>
+                        <li>Third key point that connects to practical applications in real-world scenarios.</li>
+                        <li>Fourth key point that addresses common misconceptions and clarifies complex aspects.</li>
+                    </ul>
+                    
+                    <h4>Important Concepts</h4>
+                    <p>The following concepts are fundamental to understanding this lesson:</p>
+                    
+                    <ol>
+                        <li><strong>Concept One:</strong> Detailed explanation with examples and applications.</li>
+                        <li><strong>Concept Two:</strong> How it relates to other concepts and its significance.</li>
+                        <li><strong>Concept Three:</strong> Practical implementations and considerations.</li>
+                    </ol>
+                    
+                    <h4>Summary</h4>
+                    <p>This lesson has covered several important aspects of the topic. Make sure to review the key points and practice applying these concepts to reinforce your understanding.</p>
+                `;
+            }
+            
+            function generateQuiz() {
+                return [
+                    {
+                        question: 'What is the primary purpose of this concept?',
+                        options: [
+                            'To optimize performance',
+                            'To enhance security',
+                            'To improve scalability',
+                            'To simplify implementation'
+                        ],
+                        correctAnswer: 2
+                    },
+                    {
+                        question: 'Which of the following best describes the relationship between these components?',
+                        options: [
+                            'They operate independently',
+                            'They are hierarchically organized',
+                            'They function in parallel',
+                            'They are mutually exclusive'
+                        ],
+                        correctAnswer: 1
+                    },
+                    {
+                        question: 'What is a common challenge when implementing this approach?',
+                        options: [
+                            'Resource constraints',
+                            'Compatibility issues',
+                            'Complexity of configuration',
+                            'All of the above'
+                        ],
+                        correctAnswer: 3
+                    }
+                ];
+            }
+            
+            function generateFlashcards() {
+                return [
+                    {
+                        term: 'Key Concept 1',
+                        definition: 'The fundamental principle that explains how this process works and its importance in the overall system.'
+                    },
+                    {
+                        term: 'Key Concept 2',
+                        definition: 'A critical component that enables efficient operation and provides essential functionality.'
+                    },
+                    {
+                        term: 'Key Concept 3',
+                        definition: 'An advanced technique that optimizes performance and enhances capabilities in specific scenarios.'
+                    },
+                    {
+                        term: 'Key Concept 4',
+                        definition: 'A specialized approach that addresses common challenges and provides robust solutions.'
+                    }
+                ];
+            }
+            
+            function viewCourse(courseId) {
+                const course = userData.courses.find(c => c.id === courseId);
+                
+                if (!course) {
+                    showNotification('Error', 'Course not found', 'error');
+                    return;
+                }
+                
+                // Update course last accessed
+                course.lastAccessed = new Date().toISOString();
+                
+                // Hide dashboard, show course view
+                if (dashboard) dashboard.classList.add('hidden');
+                if (courseView) courseView.classList.remove('hidden');
+                
+                // Update course header
+                document.getElementById('course-title').textContent = course.title;
+                
+                // Update course summary
+                document.getElementById('course-summary-text').textContent = course.summary;
+                
+                // Update lessons list
+                const lessonsList = document.getElementById('lessons-list');
+                lessonsList.innerHTML = '';
+                
+                course.lessons.forEach((lesson, index) => {
+                    const lessonItem = document.createElement('li');
+                    lessonItem.className = 'lesson-item' + (lesson.completed ? ' completed' : '');
+                    lessonItem.dataset.id = lesson.id;
+                    
+                    lessonItem.innerHTML = `
+                        <span class="lesson-number">${index + 1}</span>
+                        <span class="lesson-title">${lesson.title}</span>
+                        <span class="lesson-status">
+                            ${lesson.completed ? '<i class="fas fa-check-circle"></i>' : '<i class="far fa-circle"></i>'}
+                        </span>
+                    `;
+                    
+                    lessonsList.appendChild(lessonItem);
+                    
+                    // Add click event to load lesson
+                    lessonItem.addEventListener('click', () => {
+                        loadLesson(course, lesson.id);
+                    });
+                });
+                
+                // Load the first lesson by default
+                loadLesson(course, course.lessons[0].id);
+            }
+            
+            function loadLesson(course, lessonId) {
+                const lesson = course.lessons.find(l => l.id === lessonId);
+                
+                if (!lesson) {
+                    showNotification('Error', 'Lesson not found', 'error');
+                    return;
+                }
+                
+                // Update lesson title and content
+                document.getElementById('lesson-title').textContent = lesson.title;
+                document.getElementById('lesson-text').innerHTML = lesson.content;
+                
+                // Update lesson navigation
+                const currentIndex = course.lessons.findIndex(l => l.id === lessonId);
+                const prevLessonBtn = document.getElementById('prev-lesson');
+                const nextLessonBtn = document.getElementById('next-lesson');
+                const markCompleteBtn = document.getElementById('mark-complete');
+                
+                // Previous lesson button
+                if (currentIndex > 0) {
+                    prevLessonBtn.classList.remove('hidden');
+                    prevLessonBtn.onclick = () => {
+                        loadLesson(course, course.lessons[currentIndex - 1].id);
+                    };
+                } else {
+                    prevLessonBtn.classList.add('hidden');
+                }
+                
+                // Next lesson button
+                if (currentIndex < course.lessons.length - 1) {
+                    nextLessonBtn.classList.remove('hidden');
+                    nextLessonBtn.onclick = () => {
+                        loadLesson(course, course.lessons[currentIndex + 1].id);
+                    };
+                } else {
+                    nextLessonBtn.classList.add('hidden');
+                }
+                
+                // Mark complete button
+                if (lesson.completed) {
+                    markCompleteBtn.innerHTML = '<i class="fas fa-check"></i> Completed';
+                    markCompleteBtn.classList.add('completed');
+                } else {
+                    markCompleteBtn.innerHTML = '<i class="fas fa-check"></i> Mark as Complete';
+                    markCompleteBtn.classList.remove('completed');
+                }
+                
+                markCompleteBtn.onclick = () => {
+                    lesson.completed = !lesson.completed;
+                    
+                    // Update lesson item in the list
+                    const lessonItem = document.querySelector(`.lesson-item[data-id="${lessonId}"]`);
+                    if (lessonItem) {
+                        if (lesson.completed) {
+                            lessonItem.classList.add('completed');
+                            lessonItem.querySelector('.lesson-status').innerHTML = '<i class="fas fa-check-circle"></i>';
+                        } else {
+                            lessonItem.classList.remove('completed');
+                            lessonItem.querySelector('.lesson-status').innerHTML = '<i class="far fa-circle"></i>';
+                        }
+                    }
+                    
+                    // Update mark complete button
+                    if (lesson.completed) {
+                        markCompleteBtn.innerHTML = '<i class="fas fa-check"></i> Completed';
+                        markCompleteBtn.classList.add('completed');
+                    } else {
+                        markCompleteBtn.innerHTML = '<i class="fas fa-check"></i> Mark as Complete';
+                        markCompleteBtn.classList.remove('completed');
+                    }
+                    
+                    // Update course progress
+                    updateCourseProgress(course);
+                    
+                    showNotification('Success', lesson.completed ? 'Lesson marked as complete!' : 'Lesson marked as incomplete', 'success');
+                };
+                
+                // Load quiz
+                const quizContainer = document.getElementById('quiz-container');
+                const quizQuestions = document.getElementById('quiz-questions');
+                
+                if (quizContainer && quizQuestions && lesson.quiz) {
+                    quizQuestions.innerHTML = '';
+                    
+                    lesson.quiz.forEach((quizItem, qIndex) => {
+                        const questionDiv = document.createElement('div');
+                        questionDiv.className = 'quiz-question';
+                        
+                        let optionsHTML = '';
+                        quizItem.options.forEach((option, oIndex) => {
+                            optionsHTML += `
+                                <div class="quiz-option">
+                                    <input type="radio" id="q${qIndex}-o${oIndex}" name="q${qIndex}" value="${oIndex}">
+                                    <label for="q${qIndex}-o${oIndex}">${option}</label>
+                                </div>
+                            `;
+                        });
+                        
+                        questionDiv.innerHTML = `
+                            <div class="question-text">${qIndex + 1}. ${quizItem.question}</div>
+                            <div class="question-options">${optionsHTML}</div>
+                            <div class="question-feedback hidden"></div>
+                        `;
+                        
+                        quizQuestions.appendChild(questionDiv);
+                    });
+                    
+                    // Show quiz section
+                    quizContainer.classList.remove('hidden');
+                    
+                    // Submit quiz button
+                    const submitQuizBtn = document.getElementById('submit-quiz');
+                    if (submitQuizBtn) {
+                        submitQuizBtn.onclick = () => {
+                            let score = 0;
+                            let totalQuestions = lesson.quiz.length;
+                            
+                            lesson.quiz.forEach((quizItem, qIndex) => {
+                                const selectedOption = document.querySelector(`input[name="q${qIndex}"]:checked`);
+                                const questionFeedback = document.querySelectorAll('.question-feedback')[qIndex];
+                                
+                                if (selectedOption) {
+                                    const selectedValue = parseInt(selectedOption.value);
+                                    
+                                    if (selectedValue === quizItem.correctAnswer) {
+                                        score++;
+                                        questionFeedback.textContent = 'Correct!';
+                                        questionFeedback.className = 'question-feedback correct';
+                                    } else {
+                                        questionFeedback.textContent = `Incorrect. The correct answer is: ${quizItem.options[quizItem.correctAnswer]}`;
+                                        questionFeedback.className = 'question-feedback incorrect';
+                                    }
+                                } else {
+                                    questionFeedback.textContent = 'No answer selected';
+                                    questionFeedback.className = 'question-feedback warning';
+                                }
+                                
+                                questionFeedback.classList.remove('hidden');
+                            });
+                            
+                            const percentage = Math.round((score / totalQuestions) * 100);
+                            showNotification('Quiz Results', `You scored ${score}/${totalQuestions} (${percentage}%)`, 'info');
+                        };
+                    }
+                    
+                    // Reset quiz button
+                    const resetQuizBtn = document.getElementById('reset-quiz');
+                    if (resetQuizBtn) {
+                        resetQuizBtn.onclick = () => {
+                            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                                radio.checked = false;
+                            });
+                            
+                            document.querySelectorAll('.question-feedback').forEach(feedback => {
+                                feedback.classList.add('hidden');
+                            });
+                            
+                            showNotification('Quiz Reset', 'Quiz has been reset', 'info');
+                        };
+                    }
+                }
+                
+                // Load flashcards
+                const flashcardsContainer = document.getElementById('flashcards-container');
+                const flashcardsDeck = document.querySelector('.flashcards-deck');
+                
+                if (flashcardsContainer && flashcardsDeck && lesson.flashcards) {
+                    flashcardsDeck.innerHTML = '';
+                    
+                    lesson.flashcards.forEach((flashcard, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'flashcard' + (index === 0 ? ' active' : '');
+                        
+                        card.innerHTML = `
+                            <div class="flashcard-inner">
+                                <div class="flashcard-front">
+                                    <div class="flashcard-content">${flashcard.term}</div>
+                                </div>
+                                <div class="flashcard-back">
+                                    <div class="flashcard-content">${flashcard.definition}</div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        flashcardsDeck.appendChild(card);
+                        
+                        card.addEventListener('click', () => {
+                            card.classList.toggle('flipped');
+                        });
+                    });
+                    
+                    // Show flashcards section
+                    flashcardsContainer.classList.remove('hidden');
+                    
+                    // Update card counter
+                    document.getElementById('card-counter').textContent = `1/${lesson.flashcards.length}`;
+                    
+                    // Flashcard navigation
+                    let currentCardIndex = 0;
+                    const prevCardBtn = document.getElementById('prev-card');
+                    const nextCardBtn = document.getElementById('next-card');
+                    const cardCounter = document.getElementById('card-counter');
+                    
+                    function updateCardDisplay() {
+                        const cards = flashcardsDeck.querySelectorAll('.flashcard');
+                        cards.forEach((card, index) => {
+                            card.classList.remove('active');
+                            if (index === currentCardIndex) {
+                                card.classList.add('active');
+                            }
+                        });
+                        cardCounter.textContent = `${currentCardIndex + 1}/${cards.length}`;
+                    }
+                    
+                    prevCardBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const cards = flashcardsDeck.querySelectorAll('.flashcard');
+                        
+                        if (currentCardIndex > 0) {
+                            currentCardIndex--;
+                            updateCardDisplay();
+                        }
+                    });
+                    
+                    nextCardBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const cards = flashcardsDeck.querySelectorAll('.flashcard');
+                        
+                        if (currentCardIndex < cards.length - 1) {
+                            currentCardIndex++;
+                            updateCardDisplay();
+                        }
+                    });
+                }
+            }
+            
+            function updateCourseProgress(course) {
+                const completedLessons = course.lessons.filter(lesson => lesson.completed).length;
+                const totalLessons = course.lessons.length;
+                
+                course.progress = Math.round((completedLessons / totalLessons) * 100);
+                
+                // Update dashboard stats
+                initDashboard();
+            }
+            
+            // Navigation
+            const getStartedBtn = document.getElementById('get-started-btn');
+            if (getStartedBtn) {
+                getStartedBtn.addEventListener('click', () => {
+                    showNotification('Get Started', 'Starting the sign-in process...', 'info');
+                    
+                    // Trigger the login button click event
+                    if (loginButton) {
+                        loginButton.click();
+                    } else {
+                        showNotification('Error', 'Login button not found', 'error');
+                    }
+                });
+            }
+            
+            const learnMoreBtn = document.getElementById('learn-more-btn');
+            if (learnMoreBtn) {
+                learnMoreBtn.addEventListener('click', () => {
+                    const featuresSection = document.querySelector('.features');
+                    if (featuresSection) {
+                        featuresSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
+            
+            // Upload notes buttons
+            if (uploadNotesBtn) {
+                uploadNotesBtn.addEventListener('click', showUploadSection);
+            }
+            
+            if (emptyUploadBtn) {
+                emptyUploadBtn.addEventListener('click', showUploadSection);
+            }
+            
+            // Back to dashboard button
+            if (backToDashboardBtn) {
+                backToDashboardBtn.addEventListener('click', () => {
+                    if (courseView) courseView.classList.add('hidden');
+                    if (dashboard) dashboard.classList.remove('hidden');
+                });
+            }
+            
+            // About link
+            document.querySelectorAll('a[href="#about-section"]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const aboutSection = document.getElementById('about-section');
+                    if (aboutSection) {
+                        aboutSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+            
+            // GitHub Stats
+            const githubStars = document.getElementById('github-stars');
+            const githubCommits = document.getElementById('github-commits');
+            const githubPRs = document.getElementById('github-prs');
+            const githubContributions = document.getElementById('github-contributions');
+            
+            if (githubStars && githubCommits && githubPRs && githubContributions) {
+                githubStars.textContent = '42';
+                githubCommits.textContent = '156';
+                githubPRs.textContent = '23';
+                githubContributions.textContent = '15';
+            }
+        });
+    </script>
 </body>
 </html>
